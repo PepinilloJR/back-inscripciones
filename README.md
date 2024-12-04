@@ -32,5 +32,10 @@ python manage.py runserver
 - http://localhost:8000/admin/
 - http://localhost:8000/swagger/
 
+
+### Endpoints
+- http://localhost:8000/api/inscripciones
+- http://localhost:8000/api/cursos
+
 ## License
 Libre de uso xq somos cool UwU
