@@ -28,5 +28,9 @@ Para levantar la aplicación ejecutar el siguiente comando
 python manage.py runserver
 ```
 
+### URLS
+- http://localhost:8000/admin/
+- http://localhost:8000/swagger/
+
 ## License
 Libre de uso xq somos cool UwU
