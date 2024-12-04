@@ -29,8 +29,8 @@ class Curso(models.Model):
 
     # Cuatrimetres en los que se dicta el curso y horario de inicio y fin
     cuatrimestre = models.CharField(max_length=20)
-    hora_inicio = models.TimeField()
-    hora_fin = models.TimeField()
+    hora_inicio = models.IntegerField()
+    hora_fin = models.IntegerField()
 
     # Cantidad de cupos disponibles, cantidad de inscriptos
     cupo = models.IntegerField()
