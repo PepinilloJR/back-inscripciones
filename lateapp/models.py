@@ -15,6 +15,89 @@ class Materia(models.Model):
 
     def __str__(self):
         return self.nombre
+
+    def distribute_alumnos(self):
+        # Step 1: Fetch Cursos for this Materia
+        cursos = list(self.cursos.all())
+
+        # Step 2: Fetch InscripcionesTardias for this Materia
+        inscripciones = InscripcionTardia.objects.filter(materia=self)
+
+        # Step 3: Prepare distribution data structures
+        distribution = {curso: [] for curso in cursos}  # Map Cursos to their Alumnos
+        unasigned = []  # Alumnos that could not be assigned
+
+        # Step 4: Implement the distribution algorithm
+        for inscripcion in inscripciones:
+            # Attempt to place in preferred Curso
+            preferred_curso = next((curso for curso in cursos if curso.comision == inscripcion.comision1), None)
+            secondary_curso = next((curso for curso in cursos if curso.comision == inscripcion.comision2), None)
+
+            # Place Alumno in the preferred Curso if it has space
+            if preferred_curso and preferred_curso.inscriptos < preferred_curso.cupo:
+                distribution[preferred_curso].append(inscripcion.alumno)
+                preferred_curso.inscriptos += 1
+            # Otherwise, place in the secondary Curso
+            elif secondary_curso and secondary_curso.inscriptos < secondary_curso.cupo:
+                distribution[secondary_curso].append(inscripcion.alumno)
+                secondary_curso.inscriptos += 1
+            # If neither has space, add to unassigned list
+            else:
+                unasigned.append(inscripcion.alumno)
+            
+
+        # Step 5: Return the distribution and unassigned Alumnos
+        return distribution, unasigned
+    
+    def optimize_distribution(self):
+        # Step 1: Perform the initial distribution
+        distribution, unassigned = self.distribute_alumnos()
+
+        # Rearrange items to make room
+        for curso in self.cursos.all():
+            if curso.inscriptos == curso.cupo:  # If the course is full
+                for alumno in list(distribution[curso]):  # Loop over the alumnos in the curso
+                    if curso.inscriptos < curso.cupo:  
+                        break  # Stop once the container is no longer full
+                    
+                    inscripcion = InscripcionTardia.objects.filter(alumno=alumno, materia=self).last()
+                    if inscripcion:
+                        # Try to move the alumno to their secondary preferred curso
+                        secondary_curso = next((c for c in self.cursos.all() if c.comision == inscripcion.comision2), None)
+                        # If the secondary curso has space, move the alumno
+                        if secondary_curso and secondary_curso.inscriptos < secondary_curso.cupo:
+                            distribution[curso].remove(alumno)
+                            distribution[secondary_curso].append(alumno)
+                            secondary_curso.inscriptos += 1
+                            curso.inscriptos -= 1
+                            break # Stop once the container is no longer full
+
+        # Step 3: After rearranging, try placing the remaining unassigned alumnos
+        for alumno in unassigned:
+            placed = False
+            inscripcion = InscripcionTardia.objects.filter(alumno=alumno, materia=self).first()
+            if inscripcion:
+                preferred_curso = next((curso for curso in self.cursos.all() if curso.comision == inscripcion.comision1), None)
+                if preferred_curso and preferred_curso.inscriptos < preferred_curso.cupo:
+                    # Place the alumno in their preferred curso
+                    distribution[preferred_curso].append(alumno)
+                    preferred_curso.inscriptos += 1
+                    unassigned.remove(alumno)
+                    placed = True
+
+                # If the alumno still couldn't be placed, try their secondary preferred curso
+                if not placed:
+                    secondary_curso = next((curso for curso in self.cursos.all() if curso.comision == inscripcion.comision2), None)
+                    if secondary_curso and secondary_curso.inscriptos < secondary_curso.cupo:
+                        # Place the alumno in their secondary preferred curso
+                        distribution[secondary_curso].append(alumno)
+                        secondary_curso.inscriptos += 1
+                        unassigned.remove(alumno)
+
+        # Step 4: Return the optimized distribution and unassigned alumnos
+        return distribution, unassigned
+
+
     
 class Comision(models.Model):
     codigo = models.CharField(max_length=10, primary_key=True)
@@ -24,7 +107,7 @@ class Comision(models.Model):
     
 class Curso(models.Model):
     # Nombre de la materia y comision
-    materia = models.ForeignKey(Materia, on_delete=models.CASCADE)
+    materia = models.ForeignKey(Materia, on_delete=models.CASCADE, related_name='cursos')
     comision = models.ForeignKey(Comision, on_delete=models.CASCADE)
 
     # Cuatrimetres en los que se dicta el curso y horario de inicio y fin
@@ -35,7 +118,6 @@ class Curso(models.Model):
     # Cantidad de cupos disponibles, cantidad de inscriptos
     cupo = models.IntegerField()
     inscriptos = models.IntegerField(default=0)
-
 
     # Constraint que evita duplicados de materia y comision
     class Meta:
@@ -62,3 +144,4 @@ class InscripcionTardia(models.Model):
 
     def __str__(self):
         return self.alumno.nombre + " inscripto en " + self.materia.nombre
+    
