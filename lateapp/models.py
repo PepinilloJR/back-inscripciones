@@ -105,12 +105,14 @@ class Comision(models.Model):
     def __str__(self):
         return self.codigo
     
+
 class Curso(models.Model):
     # Nombre de la materia y comision
     materia = models.ForeignKey(Materia, on_delete=models.CASCADE, related_name='cursos')
     comision = models.ForeignKey(Comision, on_delete=models.CASCADE)
 
     # Cuatrimetres en los que se dicta el curso y horario de inicio y fin
+    year = models.IntegerField()
     cuatrimestre = models.CharField(max_length=20)
     hora_inicio = models.IntegerField()
     hora_fin = models.IntegerField()
@@ -130,7 +132,6 @@ class Curso(models.Model):
         return f"{self.materia.nombre} - {self.comision}"
 
 
-
 class InscripcionTardia(models.Model):
     # Alumno que se inscribe
     alumno = models.ForeignKey(Alumno, on_delete=models.CASCADE)
@@ -141,7 +142,19 @@ class InscripcionTardia(models.Model):
     comision1 = models.ForeignKey(Comision, on_delete=models.CASCADE, related_name='inscripcion_preferida')
     # Comision secundaria a la que se inscribe
     comision2 = models.ForeignKey(Comision, on_delete=models.CASCADE, related_name='inscripcion_secundaria')
-
-    def __str__(self):
-        return self.alumno.nombre + " inscripto en " + self.materia.nombre
     
+    def __str__(self):
+        return f"{self.alumno.legajo} - {self.comision1} - {self.comision2}"
+    
+
+# Alumno x Curso
+class Cursado(models.Model):
+    # Alumno que cursa
+    alumno = models.ForeignKey(Alumno, on_delete=models.CASCADE)
+    # Curso que cursa
+    curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
+    # Estado de cursado
+    estado = models.CharField(max_length=20, default='Cursando')
+    
+    def __str__(self):
+        return f"{self.alumno.legajo} - {self.curso}"

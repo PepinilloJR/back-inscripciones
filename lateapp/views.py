@@ -266,11 +266,31 @@ class InscripcionTardiaAssignmentView(APIView):
         return Response(result, status=status.HTTP_200_OK)
 
 
+class InscripcionesPorMateriaView(APIView):
+    def get(self, request, materia_nombre):
+        try:
+            materia = Materia.objects.get(nombre=materia_nombre)
+            inscripcionesTardias = InscripcionTardia.objects.filter(materia=materia)
+            data = {
+                "materia": materia.nombre,
+                "alumnos": [{
+                    "legajo": inscripcionTardia.alumno.legajo,
+                    "nombre": inscripcionTardia.alumno.nombre,
+                    "apellido": inscripcionTardia.alumno.apellido,
+                    "Comision 1": inscripcionTardia.comision1,
+                    "Comision 2": inscripcionTardia.comision2
+                    } for inscripcionTardia in inscripcionesTardias]
+            }
+            return JsonResponse(data, status=200)
+        except Materia.DoesNotExist:
+            return JsonResponse({"error": "Materia not found"}, status=404)
+
+
 class DistributeAlumnosView(APIView):
     @swagger_auto_schema(operation_description="Distribute alumnos among cursos")
-    def get(self, request, materia_id):
+    def get(self, request, materia_nombre):
         try:
-            materia = Materia.objects.get(id=materia_id)
+            materia = Materia.objects.get(nombre=materia_nombre)
             distribution, unassigned = materia.distribute_alumnos()
 
             # Prepare the response data
