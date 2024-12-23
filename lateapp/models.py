@@ -104,7 +104,7 @@ class Materia(models.Model):
 
 class Curso(models.Model):
     # Nombre de la materia y comision
-    materia = models.ForeignKey(Materia, on_delete=models.CASCADE, related_name='cursos')
+    materia = models.ForeignKey(Materia, on_delete=models.CASCADE)
     comision = models.CharField(max_length=5)
 
     # Cuatrimetres en los que se dicta el curso y horario de inicio y fin
