@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from lateapp.models import Alumno, Curso, Materia
+from lateapp.models import Alumno, Cursado, Curso, InscripcionTardia, Materia
 
 class AlumnoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -18,6 +18,7 @@ class CursoSerializer(serializers.ModelSerializer):
     def get_alumnos(self, obj):
         return obj.get_alumnos()  # Call the method to get the list of Alumnos
 
+
 class MateriaSerializer(serializers.ModelSerializer):
     cursos = CursoSerializer(many=True)
 
@@ -26,4 +27,19 @@ class MateriaSerializer(serializers.ModelSerializer):
         fields = ['nombre', 'cursos']
 
 
+class CursoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Curso
+        fields = '__all__'
 
+
+class CursadoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cursado
+        fields = '__all__'
+
+
+class InscripcionTardiaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InscripcionTardia
+        fields = '__all__'

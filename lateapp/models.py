@@ -124,7 +124,7 @@ class Curso(models.Model):
     # Constraint que evita duplicados de materia y comision
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['materia', 'comision'], name='unique_materia_comision')
+            models.UniqueConstraint(fields=['materia', 'comision', 'year', 'cuatrimestre'], name='unique_mat_com_year_cuat')
         ]
     
     # Metodo que devuelve el nombre y comision del curso
@@ -154,7 +154,7 @@ class Cursado(models.Model):
     # Curso que cursa
     curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
     # Estado de cursado
-    estado = models.CharField(max_length=20, default='Cursando')
+    estado = models.CharField(max_length=20, default='Inscripto')
     
     def __str__(self):
         return f"{self.alumno.legajo} - {self.curso}"

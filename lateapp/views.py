@@ -7,23 +7,50 @@ from .models import Curso, InscripcionTardia, Alumno, Materia, Comision
 from django.db import transaction
 from .utils.greedy_algorithm import greedy_assignment, optimize_assignments, Assignable, Containable
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from .serializers import AlumnoSerializer
+from .serializers import *
 from drf_yasg.utils import swagger_auto_schema
 
+# ------------------------------------------- CRUD views -------------------------------------------
 # List and Create (GET and POST)
 class AlumnoListCreateView(ListCreateAPIView):
     queryset = Alumno.objects.all()
     serializer_class = AlumnoSerializer
-
 # Retrieve, Update, and Delete (GET, PUT, PATCH, DELETE)
 class AlumnoDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Alumno.objects.all()
     serializer_class = AlumnoSerializer
 
+class MateriaListCreateView(ListCreateAPIView):
+    queryset = Materia.objects.all()
+    serializer_class = MateriaSerializer
+class MateriaDetailView(RetrieveUpdateDestroyAPIView):
+    queryset = Materia.objects.all()
+    serializer_class = MateriaSerializer
 
+class CursoListCreateView(ListCreateAPIView):
+    queryset = Curso.objects.all()
+    serializer_class = CursoSerializer
+class CursoDetailView(RetrieveUpdateDestroyAPIView):
+    queryset = Curso.objects.all()
+    serializer_class = CursoSerializer
 
+class CursadoListCreateView(ListCreateAPIView):
+    queryset = Cursado.objects.all()
+    serializer_class = CursadoSerializer
+class CursadoDetailView(RetrieveUpdateDestroyAPIView):
+    queryset = Cursado.objects.all()
+    serializer_class = CursadoSerializer
 
+class InscripcionTardiaListCreateView(ListCreateAPIView):
+    queryset = InscripcionTardia.objects.all()
+    serializer_class = InscripcionTardiaSerializer
+class InscripcionTardiaDetailView(RetrieveUpdateDestroyAPIView):
+    queryset = InscripcionTardia.objects.all()
+    serializer_class = InscripcionTardiaSerializer
 
+# ------------------------------------------- CRUD views -------------------------------------------
+
+# ------------------------------------------- Bulk views -------------------------------------------
 class CursoBulkCreateView(APIView):
     def post(self, request, *args, **kwargs):
         data = request.data  # List of Cursos in the provided JSON
@@ -144,6 +171,7 @@ class InscripcionTardiaBulkCreateView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+# ------------------------------------------- Bulk views -------------------------------------------
 
 
 class MateriaCursosView(APIView):
@@ -196,74 +224,6 @@ class MateriaCursosView(APIView):
         # Return the JSON response
         return Response(result, status=200)
 
-
-
-
-# No se si dejar esto o no
-class InscripcionTardiaAssignmentView(APIView):
-    def get(self, request, *args, **kwargs):
-        """
-        Endpoint to fetch Inscripciones Tardias and Cursos from the database,
-        apply the greedy algorithm based on comision1 and comision2 preferences, 
-        and return the assignment results.
-        """
-        # Fetch InscripcionTardias and Cursos from the database
-        inscripciones_tardias = InscripcionTardia.objects.all()
-        cursos = Curso.objects.all()
-
-        # Create Assignable and Containable instances for the greedy algorithm
-        assignables = [
-            Assignable(inscripcion.id, [inscripcion.comision1.id, inscripcion.comision2.id])
-            for inscripcion in inscripciones_tardias
-        ]
-        
-        containables = [
-            Containable(curso.id, curso.cupo - curso.inscriptos)  # Capacity of cursos
-            for curso in cursos
-        ]
-
-        # Build the JSON structure
-        result = []
-        for materia in materias:
-            materia_data = {
-                "materia": materia.nombre,
-                "cursos": []
-            }
-            for curso in materia.curso_set.all():
-                curso_data = {
-                    "curso": curso.comision.codigo,
-                    "inscripciones": [
-                        {
-                            "alumno": f"{inscripcion.alumno.nombre} {inscripcion.alumno.apellido}",
-                            "legajo": inscripcion.alumno.legajo
-                        }
-                        for inscripcion in curso.inscripciontardia_set.all()
-                    ]
-                }
-                materia_data["cursos"].append(curso_data)
-            result.append(materia_data)
-
-        # First pass using greedy algorithm
-        unplaced_assignables, updated_containables = greedy_assignment(assignables, containables)
-
-        # Optionally optimize the assignment
-        final_unplaced_assignables, final_containables = optimize_assignments(unplaced_assignables, updated_containables)
-
-        # Prepare response data
-        result = {
-            "assigned": [{"inscripcion_id": assignable.id, "curso_id": containable.id} for containable in final_containables for assignable in containable.objects],
-            "unassigned": [assignable.id for assignable in final_unplaced_assignables]
-        }
-
-        # Optionally update the database with the assigned Inscripciones (if needed)
-        for containable in final_containables:
-            curso = Curso.objects.get(id=containable.id)
-            for obj in containable.objects:
-                inscripcion = InscripcionTardia.objects.get(id=obj.id)
-                inscripcion.curso = curso
-                inscripcion.save()
-
-        return Response(result, status=status.HTTP_200_OK)
 
 
 class InscripcionesPorMateriaView(APIView):
