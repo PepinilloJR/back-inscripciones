@@ -24,7 +24,7 @@ class MateriaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Materia
-        fields = ['nombre', 'cursos']
+        fields = ['nombre']
 
 
 class CursoSerializer(serializers.ModelSerializer):
