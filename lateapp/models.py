@@ -1,4 +1,5 @@
 from django.db import models
+from django.forms import ValidationError
 
 
 class Alumno(models.Model):
@@ -156,5 +157,16 @@ class Cursado(models.Model):
     # Estado de cursado
     estado = models.CharField(max_length=20, default='Inscripto')
     
+    # Save modification that checks there is space in the Curso before saving
+    def save(self, *args, **kwargs):
+        # Check if the curso has available spots
+        if self.curso.inscriptos >= self.curso.cupo:
+            raise ValidationError('No hay cupos disponibles para este curso.')
+        else:
+            # Increment the inscriptos count
+            self.curso.inscriptos += 1
+            self.curso.save()
+            super().save(*args, **kwargs)
+
     def __str__(self):
         return f"{self.alumno.legajo} - {self.curso}"
