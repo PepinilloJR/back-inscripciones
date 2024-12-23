@@ -20,11 +20,11 @@ class CursoSerializer(serializers.ModelSerializer):
 
 
 class MateriaSerializer(serializers.ModelSerializer):
-    cursos = CursoSerializer(many=True)
+    cursos = CursoSerializer(many=True, required=False)
 
     class Meta:
         model = Materia
-        fields = ['nombre']
+        fields = ['nombre', 'cursos']
 
 
 class CursoSerializer(serializers.ModelSerializer):
