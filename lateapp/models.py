@@ -113,7 +113,7 @@ class Curso(models.Model):
     comision = models.ForeignKey(Comision, on_delete=models.CASCADE)
 
     # Cuatrimetres en los que se dicta el curso y horario de inicio y fin
-    year = models.IntegerField()
+    year = models.IntegerField(default=2025)
     cuatrimestre = models.CharField(max_length=20)
     hora_inicio = models.IntegerField()
     hora_fin = models.IntegerField()
