@@ -3,7 +3,7 @@ from django.views import View
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Curso, InscripcionTardia, Alumno, Materia, Comision
+from .models import Curso, InscripcionTardia, Alumno, Materia
 from django.db import transaction
 from .utils.greedy_algorithm import greedy_assignment, optimize_assignments, Assignable, Containable
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView

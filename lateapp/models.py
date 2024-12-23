@@ -135,9 +135,11 @@ class InscripcionTardia(models.Model):
     # Materia a la que se inscribe
     materia = models.ForeignKey(Materia, on_delete=models.CASCADE)
     # Comision preferida a la que se inscribe
-    comision1 = models.ForeignKey(Comision, on_delete=models.CASCADE, related_name='inscripcion_preferida')
+    comision1 = models.CharField(max_length=5)
+    #models.ForeignKey(Comision, on_delete=models.CASCADE, related_name='inscripcion_preferida')
     # Comision secundaria a la que se inscribe
-    comision2 = models.ForeignKey(Comision, on_delete=models.CASCADE, related_name='inscripcion_secundaria')
+    comision2 = models.CharField(max_length=5)
+    #models.ForeignKey(Comision, on_delete=models.CASCADE, related_name='inscripcion_secundaria')
     
     def __str__(self):
         return f"{self.alumno.legajo} - {self.comision1} - {self.comision2}"
