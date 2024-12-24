@@ -23,7 +23,7 @@ class MateriaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Materia
-        fields = ['nombre']
+        fields = ['id','nombre']
 
 
 class CursoSerializer(serializers.ModelSerializer):
