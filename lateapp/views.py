@@ -73,13 +73,10 @@ class CursoBulkCreateView(APIView):
                     # Ensure Materia exists, create if not
                     materia, materia_created = Materia.objects.get_or_create(nombre=materia_name)
 
-                    # Ensure Comision exists, create if not
-                    comision, comision_created = Comision.objects.get_or_create(codigo=comision_code)
-
                     # Create Curso
                     curso = Curso.objects.create(
                         materia=materia,
-                        comision=comision,
+                        comision=comision_code,  # Changed to use comision_code directly
                         cuatrimestre=cuatrimestre,
                         hora_inicio=hora_inicio,
                         hora_fin=hora_fin,
@@ -142,13 +139,6 @@ class InscripcionTardiaBulkCreateView(APIView):
                     except Materia.DoesNotExist:
                         return Response({"error": f"Materia '{materia_name}' not found"}, status=status.HTTP_400_BAD_REQUEST)
 
-                    # Ensure Comisiones exist
-                    try:
-                        comision1 = Comision.objects.get(codigo=comision1_code)
-                        comision2 = Comision.objects.get(codigo=comision2_code)
-                    except Comision.DoesNotExist:
-                        return Response({"error": "One or both Comisiones not found"}, status=status.HTTP_400_BAD_REQUEST)
-
                     # Get or create Alumno
                     alumno, created = Alumno.objects.get_or_create(
                         legajo=legajo,
@@ -159,8 +149,8 @@ class InscripcionTardiaBulkCreateView(APIView):
                     inscripcion = InscripcionTardia.objects.create(
                         alumno=alumno,
                         materia=materia,
-                        comision1=comision1,
-                        comision2=comision2,
+                        comision1=comision1_code,  # Changed to use comision1_code directly
+                        comision2=comision2_code,  # Changed to use comision2_code directly
                     )
                     created_records.append(inscripcion.id)
             
@@ -185,7 +175,7 @@ class MateriaCursosView(APIView):
         assignables = [
             Assignable(
                 id=inscripcion.id,
-                preferences=[inscripcion.comision1.id, inscripcion.comision2.id]
+                preferences=[inscripcion.comision1, inscripcion.comision2]  # Changed to use comision1 and comision2 directly
             )
             for inscripcion in inscripciones
         ]
@@ -209,7 +199,7 @@ class MateriaCursosView(APIView):
             }
             for curso in materia.curso_set.all():
                 curso_data = {
-                    "curso": f"{materia.nombre} - {curso.comision.codigo}",
+                    "curso": f"{materia.nombre} - {curso.comision}",  # Changed to use comision directly
                     "inscripciones": [
                         {
                             "alumno": f"{inscripcion.alumno.nombre} {inscripcion.alumno.apellido}",
