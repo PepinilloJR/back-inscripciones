@@ -8,6 +8,21 @@ Proyecto minimo para administrar agilmente las inscripciones tardías de la carr
 - Django
 - pip (Python package installer)
 
+## Model
+
+- **Alumno**: Representa a un estudiante con un legajo único, nombre y apellido.
+- **Materia**: Representa una materia que puede tener varios cursos asociados.
+- **Curso**: Representa un curso único de una materia específica y una comisión, en un año y cuatrimestre en particular.
+- **InscripcionTardia**: Representa la inscripción tardía de un alumno a una materia, con preferencias de comisiones.
+- **Cursado**: El cursado de un alumno en un curso en particular, registrando su estado para futuro analisis.
+
+### Relaciones entre modelos:
+- Un **Alumno** puede tener múltiples **InscripcionTardia**.
+- Una **Materia** puede tener múltiples **Curso**.
+- Un **Curso** pertenece a una **Materia**.
+- Un **Curso** puede tener múltiples **Cursado**.
+- Un **Alumno** puede tener múltiples **Cursado**.
+- Una **InscripcionTardia** pertenece a un **Alumno** y a una **Materia**.
 
 ## Database Migration
 Para migrar la base de datos, ejecutar estos comandos
@@ -31,7 +46,6 @@ python manage.py runserver
 ### URLS
 - http://localhost:8000/admin/
 - http://localhost:8000/swagger/
-
 
 ### Endpoints
 - http://localhost:8000/api/inscripciones
