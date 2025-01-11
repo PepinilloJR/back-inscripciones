@@ -17,6 +17,9 @@ urlpatterns = [
     path("cursados/", views.CursadoListCreateView.as_view(), name="cursado-list-create"),
     path("cursados/<int:pk>/", views.CursadoDetailView.as_view(), name="cursado-detail"),
 
+    path("inscripciones/", views.InscripcionTardiaListCreateView.as_view(), name="inscripcion-list-create"),
+    path("inscripciones/<int:pk>/", views.InscripcionTardiaDetailView.as_view(), name="inscripcion-detail"),
+
     path('materias/', views.MateriaListCreateView.as_view(), name='materia-list-create'),
     path('materias/<int:pk>/', views.MateriaDetailView.as_view(), name='materia-detail'),
     path('materias/inscripciones/<int:materia_nombre>/', views.InscripcionesPorMateriaView.as_view(), name='inscripciones_por_materia'),
