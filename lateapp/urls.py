@@ -8,17 +8,16 @@ urlpatterns = [
     path('alumnos/', views.AlumnoListCreateView.as_view(), name='alumno-list-create'),
     path('alumnos/<int:pk>/', views.AlumnoDetailView.as_view(), name='alumno-detail'),
 
+    path("inscripciones/", views.InscripcionTardiaListCreateView.as_view(), name="inscripcion-list-create"),
+    path("inscripciones/<int:pk>/", views.InscripcionTardiaDetailView.as_view(), name="inscripcion-detail"),
     path("inscripciones/bulk", views.InscripcionTardiaBulkCreateView.as_view(), name="bulk_create_inscripciones"),
-    path("cursos/bulk", views.CursoBulkCreateView.as_view(), name="bulk_create_cursos"),
 
     path("cursos/", views.CursoListCreateView.as_view(), name="curso-list-create"),
     path("cursos/<int:pk>/", views.CursoDetailView.as_view(), name="curso-detail"),
+    path("cursos/bulk", views.CursoBulkCreateView.as_view(), name="bulk_create_cursos"),
 
     path("cursados/", views.CursadoListCreateView.as_view(), name="cursado-list-create"),
     path("cursados/<int:pk>/", views.CursadoDetailView.as_view(), name="cursado-detail"),
-
-    path("inscripciones/", views.InscripcionTardiaListCreateView.as_view(), name="inscripcion-list-create"),
-    path("inscripciones/<int:pk>/", views.InscripcionTardiaDetailView.as_view(), name="inscripcion-detail"),
 
     path('materias/', views.MateriaListCreateView.as_view(), name='materia-list-create'),
     path('materias/<int:pk>/', views.MateriaDetailView.as_view(), name='materia-detail'),
