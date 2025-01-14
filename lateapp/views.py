@@ -217,9 +217,9 @@ class MateriaCursosView(APIView):
 
 
 class InscripcionesPorMateriaView(APIView):
-    def get(self, request, materia_nombre):
+    def get(self, request, materia_id):
         try:
-            materia = Materia.objects.get(nombre=materia_nombre)
+            materia = Materia.objects.get(id=materia_id)
             inscripcionesTardias = InscripcionTardia.objects.filter(materia=materia)
             data = {
                 "materia": materia.nombre,
@@ -238,9 +238,9 @@ class InscripcionesPorMateriaView(APIView):
 
 class DistributeAlumnosView(APIView):
     @swagger_auto_schema(operation_description="Distribute alumnos among cursos")
-    def get(self, request, materia_nombre):
+    def get(self, request, materia_id):
         try:
-            materia = Materia.objects.get(nombre=materia_nombre)
+            materia = Materia.objects.get(id=materia_id)
             distribution, unassigned = materia.distribute_alumnos()
 
             # Prepare the response data
