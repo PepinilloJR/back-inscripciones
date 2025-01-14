@@ -13,7 +13,7 @@ urlpatterns = [
     path("inscripciones/bulk", views.InscripcionTardiaBulkCreateView.as_view(), name="bulk_create_inscripciones"),
 
     # Inscripciones por materia, algoritmo de distribución y algoritmo de optimización
-    path('inscripciones/materia/<int:materia_id/', views.InscripcionesPorMateriaView.as_view(), name='inscripciones_por_materia'),
+    path('inscripciones/materia/<int:materia_id>/', views.InscripcionesPorMateriaView.as_view(), name='inscripciones_por_materia'),
     path('inscripciones/materia/distribute/<int:materia_id>/', views.DistributeAlumnosView.as_view(), name='distribute_alumnos'),
     path('inscripciones/materia/optimize/<int:materia_id>/', views.OptimizeDistributionView.as_view(), name='optimize_distribution'),
 
