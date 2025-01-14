@@ -114,12 +114,12 @@ class InscripcionTardiaBulkCreateView(APIView):
                     # Debug the cleaned data for each record
                     print("Processing record:", record)
 
-                    nombre = record.get("Nombre")
-                    apellido = record.get("Apellido")
-                    legajo = record.get("Confirmar Legajo")
-                    materia_name = record.get("Materia")
-                    comision1_code = record.get("Comisión (Opción 1)")
-                    comision2_code = record.get("Comisión Opción 2")
+                    nombre = record.get("nombre")
+                    apellido = record.get("apellido")
+                    legajo = record.get("legajo")
+                    materia_name = record.get("materia")
+                    comision1_code = record.get("comision1")
+                    comision2_code = record.get("comision2")
 
                     # Print field values to verify
                     print("Nombre:", nombre)
