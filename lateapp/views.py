@@ -278,3 +278,27 @@ class OptimizeDistributionView(APIView):
 
         except Materia.DoesNotExist:
             return JsonResponse({"error": "Materia not found"}, status=404)
+
+
+class CursosPorMateriaView(APIView):
+    def get(self, request, materia_id):
+        try:
+            materia = Materia.objects.get(id=materia_id)
+            cursos = Curso.objects.filter(materia=materia)
+            data = {
+                "materia": materia.nombre,
+                "cursos": [{
+                    "id": curso.id,
+                    "comision": curso.comision,
+                    "cuatrimestre": curso.cuatrimestre,
+                    "hora_inicio": curso.hora_inicio,
+                    "hora_fin": curso.hora_fin,
+                    "cupo": curso.cupo,
+                    "inscriptos": curso.inscriptos
+                } for curso in cursos]
+            }
+            return JsonResponse(data, status=200)
+        except Materia.DoesNotExist:
+            return JsonResponse({"error": "Materia not found"}, status=404)
+
+
