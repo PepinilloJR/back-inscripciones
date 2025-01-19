@@ -61,9 +61,9 @@ class CursoBulkCreateView(APIView):
                 for record in data:
                     materia_name = record.get("materia")
                     comision_code = record.get("comision")
-                    cuatrimestre = record.get("diccomisio")
-                    hora_inicio = record.get("hd")
-                    hora_fin = record.get("hh")
+                    cuatrimestre = record.get("cuatrimestre")
+                    hora_inicio = record.get("hora_inicio")
+                    hora_fin = record.get("hora_fin")
                     inscriptos = record.get("inscriptos")
                     cupo = record.get("cupo")
 
@@ -181,21 +181,21 @@ class CursadoBulkCreateView(APIView):
                     # Debug the cleaned data for each record
                     print("Processing record:", record)
 
-                    estado = record.get("estado")
-                    nombre = record.get("nombre")
-                    apellido = record.get("apellido")
-                    legajo = record.get("legajo")
-                    materia_name = record.get("materia")
-                    comision_code = record.get("comision")
-                    cuatrimestre = record.get("cuatrimestre")
-                    hora_inicio = record.get("hd")
-                    hora_fin = record.get("hh")
-                    inscriptos = record.get("inscriptos")
-                    cupo = record.get("cupo")
+                    estado = record.get("estado") 
+                    nombre = record.get("nombre") 
+                    apellido = record.get("apellido") 
+                    legajo = record.get("legajo") 
+                    materia_name = record.get("materia") 
+                    comision_code = record.get("comision") 
+                    cuatrimestre = record.get("cuatrimestre") 
+                    hora_inicio = record.get("hora_inicio") 
+                    hora_fin = record.get("hora_fin") 
+                    inscriptos = record.get("inscriptos") 
+                    cupo = record.get("cupo") 
 
                     # Check for missing fields
-                    if not all([estado, nombre, apellido, legajo, materia_name, comision_code, cuatrimestre, hora_inicio, hora_fin, inscriptos, cupo]):
-                        return Response({"error": "Missing required fields"}, status=status.HTTP_400_BAD_REQUEST)
+                    #if not all([estado, nombre, apellido, legajo, materia_name, comision_code, cuatrimestre, hora_inicio, hora_fin, inscriptos, cupo]):
+                    #    return Response({"error": "Missing required fields"}, status=status.HTTP_400_BAD_REQUEST)
 
                     # Ensure Materia exists
                     try:
@@ -214,10 +214,12 @@ class CursadoBulkCreateView(APIView):
                         materia=materia,
                         comision=comision_code,  # Changed to use comision_code directly
                         cuatrimestre=cuatrimestre,
-                        hora_inicio=hora_inicio,
-                        hora_fin=hora_fin,
-                        cupo=cupo,
-                        inscriptos=inscriptos
+                        defaults={
+                            "hora_inicio": hora_inicio,
+                            "hora_fin": hora_fin,
+                            "cupo": cupo,
+                            "inscriptos": inscriptos,
+                        }
                     )
 
                     cursado = Cursado.objects.create(
@@ -228,7 +230,7 @@ class CursadoBulkCreateView(APIView):
                     created_records.append(cursado.id)
             
             return Response(
-                {"message": "Inscripciones created", "created_ids": created_records},
+                {"message": "Cursado created", "created_ids": created_records},
                 status=status.HTTP_201_CREATED
             )
         except Exception as e:
