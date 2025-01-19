@@ -22,6 +22,7 @@ urlpatterns = [
 
     path("cursados/", views.CursadoListCreateView.as_view(), name="cursado-list-create"),
     path("cursados/<int:pk>/", views.CursadoDetailView.as_view(), name="cursado-detail"),
+    path("cursados/bulk", views.CursadoBulkCreateView.as_view(), name="bulk_create_cursados"),
 
     path('materias/', views.MateriaListCreateView.as_view(), name='materia-list-create'),
     path('materias/<int:pk>/', views.MateriaDetailView.as_view(), name='materia-detail'),

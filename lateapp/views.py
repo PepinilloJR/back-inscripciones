@@ -161,6 +161,80 @@ class InscripcionTardiaBulkCreateView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+class CursadoBulkCreateView(APIView):
+    def post(self, request, *args, **kwargs):
+        data = request.data  # List of cursados in the provided JSON
+        created_records = []
+
+        # Print the incoming data to debug
+        print("Received data:", data)
+
+        # Clean the keys (remove spaces from field names)
+        cleaned_data = []
+        for record in data:
+            cleaned_record = {key.strip(): value for key, value in record.items()}
+            cleaned_data.append(cleaned_record)
+        
+        try:
+            with transaction.atomic():  # Ensure all-or-nothing behavior
+                for record in cleaned_data:
+                    # Debug the cleaned data for each record
+                    print("Processing record:", record)
+
+                    estado = record.get("estado")
+                    nombre = record.get("nombre")
+                    apellido = record.get("apellido")
+                    legajo = record.get("legajo")
+                    materia_name = record.get("materia")
+                    comision_code = record.get("comision")
+                    cuatrimestre = record.get("cuatrimestre")
+                    hora_inicio = record.get("hd")
+                    hora_fin = record.get("hh")
+                    inscriptos = record.get("inscriptos")
+                    cupo = record.get("cupo")
+
+                    # Check for missing fields
+                    if not all([estado, nombre, apellido, legajo, materia_name, comision_code, cuatrimestre, hora_inicio, hora_fin, inscriptos, cupo]):
+                        return Response({"error": "Missing required fields"}, status=status.HTTP_400_BAD_REQUEST)
+
+                    # Ensure Materia exists
+                    try:
+                        materia = Materia.objects.get(nombre=materia_name)
+                    except Materia.DoesNotExist:
+                        return Response({"error": f"Materia '{materia_name}' not found"}, status=status.HTTP_400_BAD_REQUEST)
+
+                    # Get or create Alumno
+                    alumno, created = Alumno.objects.get_or_create(
+                        legajo=legajo,
+                        defaults={"nombre": nombre, "apellido": apellido}  
+                    )
+
+                    # Get or create Curso
+                    curso, curso_created = Curso.objects.get_or_create(
+                        materia=materia,
+                        comision=comision_code,  # Changed to use comision_code directly
+                        cuatrimestre=cuatrimestre,
+                        hora_inicio=hora_inicio,
+                        hora_fin=hora_fin,
+                        cupo=cupo,
+                        inscriptos=inscriptos
+                    )
+
+                    cursado = Cursado.objects.create(
+                        estado=estado,
+                        alumno=alumno,
+                        curso=curso
+                    )
+                    created_records.append(cursado.id)
+            
+            return Response(
+                {"message": "Inscripciones created", "created_ids": created_records},
+                status=status.HTTP_201_CREATED
+            )
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 # ------------------------------------------- Bulk views -------------------------------------------
 
 
