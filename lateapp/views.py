@@ -298,13 +298,11 @@ class InscripcionesPorMateriaView(APIView):
             materia = Materia.objects.get(id=materia_id)
             inscripcionesTardias = InscripcionTardia.objects.filter(materia=materia)
             data = {
-                "materia": materia.nombre,
-                "alumnos": [{
-                    "legajo": inscripcionTardia.alumno.legajo,
-                    "nombre": inscripcionTardia.alumno.nombre,
-                    "apellido": inscripcionTardia.alumno.apellido,
-                    "Comision 1": inscripcionTardia.comision1,
-                    "Comision 2": inscripcionTardia.comision2
+                "inscripciones": [{
+                    "alumno": inscripcionTardia.alumno.legajo,
+                    "comision1": inscripcionTardia.comision1,
+                    "comision2": inscripcionTardia.comision2,
+                    "materia": inscripcionTardia.materia_id
                     } for inscripcionTardia in inscripcionesTardias]
             }
             return JsonResponse(data, status=200)
@@ -370,7 +368,8 @@ class CursosPorMateriaView(APIView):
                     "hora_inicio": curso.hora_inicio,
                     "hora_fin": curso.hora_fin,
                     "cupo": curso.cupo,
-                    "inscriptos": curso.inscriptos
+                    "inscriptos": curso.inscriptos,
+                    "materia": curso.materia.id
                 } for curso in cursos]
             }
             return JsonResponse(data, status=200)
