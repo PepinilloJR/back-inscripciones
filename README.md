@@ -8,7 +8,7 @@ Antes de ejecutar este proyecto, asegúrate de tener instalados los siguientes r
 
 - version de Java 23+
 - Maven 3.x
-- Base de datos MySql
+- Base de datos MySQL
 
 ### Construcción y ejecución con Maven
 ```sh
