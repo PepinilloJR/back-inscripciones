@@ -1,4 +1,4 @@
-# Proyecto Spring Boot
+# Proyecto Back-inscripciones
 
 Este es un proyecto basado en Spring Boot que proporciona el backend para la inscripcion tardia de estudiantes.
 
