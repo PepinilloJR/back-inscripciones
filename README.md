@@ -1,41 +1,27 @@
-# Late Apply
+# Proyecto Spring Boot
 
-## Description
-Proyecto minimo para administrar agilmente las inscripciones tardías de la carrera de Ingeniería en Sistemas
+Este es un proyecto basado en Spring Boot que proporciona el backend para la inscripcion tardia de estudiantes.
 
-## Prerequisites
-- Python 3.x
-- Django
-- pip (Python package installer)
+## Requisitos previos
 
+Antes de ejecutar este proyecto, asegúrate de tener instalados los siguientes requisitos:
 
-## Database Migration
-Para migrar la base de datos, ejecutar estos comandos
+- version de Java 23+
+- Maven 3.x
+- Base de datos MySql
 
-1. Make migrations:
-    ```sh
-    python manage.py makemigrations
-    ```
-
-2. Apply migrations:
-    ```sh
-    python manage.py migrate
-    ```
-
-## Running the Project
-Para levantar la aplicación ejecutar el siguiente comando
+### Construcción y ejecución con Maven
 ```sh
-python manage.py runserver
+ mvn clean install
+ mvn spring-boot:run
 ```
+## Configuración
 
-### URLS
-- http://localhost:8000/admin/
-- http://localhost:8000/swagger/
+Este proyecto utiliza un archivo de configuración en `application.properties`. Modifica las propiedades necesarias antes de ejecutar el proyecto.
 
-
-### Endpoints
-- http://localhost:8000/api/inscripciones
-- http://localhost:8000/api/cursos
-
-## License
-Libre de uso xq somos cool UwU
+Ejemplo (`src/main/resources/application.properties`):
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/mi_base
+spring.datasource.username=usuario
+spring.datasource.password=contraseña
+```
