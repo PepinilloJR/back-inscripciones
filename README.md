@@ -18,10 +18,15 @@ Antes de ejecutar este proyecto, asegúrate de tener instalados los siguientes r
 ## Configuración
 
 Este proyecto utiliza un archivo de configuración en `application.properties`. Modifica las propiedades necesarias antes de ejecutar el proyecto.
-
-Ejemplo (`src/main/resources/application.properties`):
+Ejemplo (`proyecto java/inscripciones_backend/src/main/resources/application.properties`):
 ```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/mi_base
+spring.datasource.url=jdbc:mysql://localhost:3306/inscripcionestest
 spring.datasource.username=usuario
 spring.datasource.password=contraseña
+```
+puedes setear las variables de entorno por default 
+```properties
+spring.datasource.url=${DB_URL}
+spring.datasource.username=${DB_USER}
+spring.datasource.password=${DB_PASS}
 ```
